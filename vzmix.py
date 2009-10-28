@@ -41,15 +41,27 @@ class UBC:
         else:
             return '%s="%d"' % (self.name, self.barrier)
 
-    def multiply(self, factor):
-        self.barrier = self.ensureCap(int(self.barrier * factor))
-        if self.limit is not None:
-            self.limit = self.ensureCap(int(self.limit * factor))
-
     def ensureCap(self, value):
         if value > self.cap:
             return self.cap
         return value
+
+    def __mul__(self, factor):
+        self.barrier = self.ensureCap(int(self.barrier * factor))
+        if self.limit is not None:
+            self.limit = self.ensureCap(int(self.limit * factor))
+
+    def __add__(self, other):
+        self.barrier = self.ensureCap(self.barrier + other.barrier)
+        if self.limit is not None and other.limit is not None:
+            self.limit = self.ensureCap(self.limit + other.limit)
+        return self
+
+    def __sub__(self, other):
+        self.barrier = self.ensureCap(self.barrier - other.barrier)
+        if self.limit is not None and other.limit is not None:
+            self.limit = self.ensureCap(self.limit - other.limit)
+        return self
 
 
 # Represents a Container Configuration file
@@ -105,10 +117,33 @@ class CTConfig:
         for line in self.data:
             print line
 
-    def multiply(self, factor):
+    def getUBC(self, name):
         for ubc in self.data:
             if isinstance(ubc, UBC):
-                ubc.multiply(factor)
+                if ubc.name == name:
+                    return ubc
+
+    def __mul__(self, factor):
+        for ubc in self.data:
+            if isinstance(ubc, UBC):
+                ubc *= factor
+        return self
+
+    def __add__(self, other):
+        for oubc in other.data:
+            if isinstance(oubc, UBC):
+                ubc = self.getUBC(oubc.name)
+                if ubc is not None:
+                    ubc += oubc
+        return self
+
+    def __sub__(self, other):
+        for oubc in other.data:
+            if isinstance(oubc, UBC):
+                ubc = self.getUBC(oubc.name)
+                if ubc is not None:
+                    ubc -= oubc
+        return self
 
 
 def main():
@@ -117,7 +152,11 @@ def main():
     cli = OptionParser(usage="%prog [options] <base-file>",
                        description="Generate OpenVZ container configuration files based on an existing file")
     cli.add_option("-m", "--multiply", dest="multiply", type="float", metavar="FACTOR",
-                      help="multiply base file by given factor")
+                      help="multiply by given factor")
+    cli.add_option("-a", "--add", dest="add", type="string", action="append", metavar="FILE",
+                      help="add (as in sum) given file, you can add as many files as you need by specifying this option multiple times")
+    cli.add_option("-s", "--substract", dest="substract", type="string", action="append", metavar="FILE",
+                      help="substract given file, you can add as many files as you need by specifying this option multiple times")
     cli.add_option("-d", "--debug", dest="debug", action="store_true",
                       help="do not catch python exceptions, useful for debugging")
     (options, args) = cli.parse_args();
@@ -138,7 +177,17 @@ def main():
             if options.multiply <= 0:
                 cli.error("Invalid multiplication factor %s" % str(options.multiply))
         
-            c.multiply(options.multiply)
+            c *= options.multiply
+
+        # Addition
+        if options.add is not None:
+            for f in options.add:
+                c += CTConfig(f)
+
+        # Substract
+        if options.substract is not None:
+            for f in options.substract:
+                c -= CTConfig(f)
 
         c.toString()
     except Exception, e:
