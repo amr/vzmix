@@ -1,10 +1,22 @@
 #!/usr/bin/env python
+#
 # vzmix - generate container configuration files based on existing ones.
 #
-# Written by: Amr Mostafa <amr.mostafa@egyptdc.com>
-#
-# Licensed under: GPL3
+# Copyright (C) 2009 Amr Mostafa <amr.mostafa@egyptdc.com>
 # Copyright (c) 2009 EgyptDC (http://egyptdc.com)
+#
+# This program is free software: you can redistribute it and/or modify
+# it under the terms of the GNU General Public License as published by
+# the Free Software Foundation, either version 3 of the License, or
+# (at your option) any later version.
+#
+# This program is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+# GNU General Public License for more details.
+#
+# You should have received a copy of the GNU General Public License
+# along with this program. If not, see <http://www.gnu.org/licenses/>.
 
 # Represents a User Beancounter
 # See: http://wiki.openvz.org/UBC
@@ -34,7 +46,6 @@ class UBC:
         if self.limit is not None:
             self.limit = self.ensureCap(int(self.limit * factor))
 
-    # TODO: This should become a @decorator for limit and barrier properties
     def ensureCap(self, value):
         return value if value < self.cap else self.cap
 
