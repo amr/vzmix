@@ -32,7 +32,7 @@ class UBC:
     def __init__(self, name=None, barrier=None, limit=None):
         self.name = name
         self.barrier = int(barrier)
-        if len(limit):
+        if limit is not None:
             self.limit = int(limit)
         
     def __str__(self):
@@ -47,7 +47,9 @@ class UBC:
             self.limit = self.ensureCap(int(self.limit * factor))
 
     def ensureCap(self, value):
-        return value if value < self.cap else self.cap
+        if value > self.cap:
+            return self.cap
+        return value
 
 
 # Represents a Container Configuration file
@@ -77,13 +79,19 @@ class CTConfig:
         if self.isEmpty(line) or self.isComment(line):
             return line
         else:
-            (name, sep, value) = line.strip().replace('"', "").partition("=")
+            parts = line.strip().replace('"', "").split("=")
+            name, value = parts[0], parts[1]
             if not name or not value:
                 raise ValueError("Can not parse line: %s" % line);
 
             name = name.strip()
 
-            (barrier, sep, limit) = value.partition(":")
+            parts = value.split(":")
+            barrier = parts[0]
+            if len(parts) > 1:
+                limit = parts[1]
+            else:
+                limit = None
 
             return UBC(name=name, barrier=barrier, limit=limit)
 
@@ -118,10 +126,10 @@ def main():
         cli.error("No base file provided")
 
     try:
-        # Require Python >= 2.5
+        # Require Python >= 2.4
         import sys
-        if sys.version_info[0] < 2 or sys.version_info[1] < 5:
-            cli.error("Python 2.5.0 or higher is required")
+        if sys.version_info[0] < 2 or sys.version_info[1] < 4:
+            cli.error("Python 2.4.0 or higher is required")
 
         c = CTConfig(args[0])
 
