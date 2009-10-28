@@ -1,21 +1,19 @@
 INTRODUCTION
 ============
 
-  vzmix generates OpenVZ container configurations based on existing ones.
+  `vzmix` generates OpenVZ container configurations based on existing ones.
 
-  For example, given a base configuration file, vzmix can multiply it by
-  a given factor. Check the full options by invoking vzmix with --help.
+  For example, given a base configuration file, `vzmix` can multiply it by
+  a given factor. Check the full options by invoking `vzmix` with `--help`.
 
 
 USAGE
 =====
 
-  Check vzmix --help.
+  Check `vzmix --help`.
 
 
 TODO
 ====
 
   - Add support for adding/substracting files
-
-  Check the code for other TODOs

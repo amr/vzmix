@@ -104,7 +104,6 @@ class CTConfig:
 
 
 def main():
-    import os
     from optparse import OptionParser
 
     cli = OptionParser(usage="%prog [options] <base-file>",
@@ -119,6 +118,11 @@ def main():
         cli.error("No base file provided")
 
     try:
+        # Require Python >= 2.5
+        import sys
+        if sys.version_info[0] < 2 or sys.version_info[1] < 5:
+            cli.error("Python 2.5.0 or higher is required")
+
         c = CTConfig(args[0])
 
         # Multiply
