@@ -62,7 +62,7 @@ class UBCValue:
         return str(self.value)
 
     def __repr__(self):
-        return str(self.value)
+        return "%s(%s)" % (type(self), self.value)
 
 class UBC:
     """Represents a User Beancounter
@@ -84,6 +84,12 @@ class UBC:
             return '%s="%d:%d"' % (self.name, self.barrier, self.limit)
         else:
             return '%s="%d"' % (self.name, self.barrier)
+
+    def __repr__(self):
+        if self.limit is not None:
+            return '%s(%s, %d, %d)' % (type(self), self.name, self.barrier, self.limit)
+        else:
+            return '%s(%s, %d)' % (type(self), self.name, self.barrier)
 
     def multiply(self, other):
         """Multiplies self by given object"""
@@ -159,10 +165,6 @@ class CTConfig:
     def isComment(self, s):
         return s.startswith("#")
 
-    def toString(self):
-        for line in self.data:
-            print line
-
     def getUBC(self, name):
         for ubc in self.data:
             if isinstance(ubc, UBC):
@@ -187,6 +189,9 @@ class CTConfig:
                 ubc = self.getUBC(oubc.name)
                 if ubc is not None:
                     ubc.substract(oubc)
+
+    def __str__(self):
+        return "\n".join([str(line) for line in self.data])
 
 
 # Helper function to convert a given object to a number
@@ -242,7 +247,8 @@ def main():
             for f in options.substract:
                 c.substract(CTConfig(f))
 
-        c.toString()
+        # Output results
+        print c
     except Exception, e:
         if options.debug:
             raise
