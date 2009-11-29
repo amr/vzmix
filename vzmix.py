@@ -62,7 +62,7 @@ class UBCValue:
         return str(self.value)
 
     def __repr__(self):
-        return "%s(%s)" % (type(self), self.value)
+        return "%s(%s)" % (self.__class__, self.value)
 
 class UBC:
     """Represents a User Beancounter
@@ -87,9 +87,9 @@ class UBC:
 
     def __repr__(self):
         if self.limit is not None:
-            return '%s(%s, %d, %d)' % (type(self), self.name, self.barrier, self.limit)
+            return '%s(%s, %d, %d)' % (self.__class__, self.name, self.barrier, self.limit)
         else:
-            return '%s(%s, %d)' % (type(self), self.name, self.barrier)
+            return '%s(%s, %d)' % (self.__class__, self.name, self.barrier)
 
     def multiply(self, other):
         """Multiplies self by given object"""
