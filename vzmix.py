@@ -100,7 +100,7 @@ class UBC:
     def add(self, other):
         """Adds given object to self"""
         if not isinstance(other, UBC):
-            raise TypeError("Cannot add objects of type %s to UBC" % type(other))
+            raise TypeError("Cannot add objects of type %s to UBC" % other.__class__)
 
         self.barrier += other.barrier
         if self.limit is not None and other.limit is not None:
@@ -109,7 +109,7 @@ class UBC:
     def substract(self, other):
         """Substracts given object from self"""
         if not isinstance(other, UBC):
-            raise TypeError("Cannot substract objects of type %s from UBC" % type(other))
+            raise TypeError("Cannot substract objects of type %s from UBC" % other.__class__)
 
         self.barrier -= other.barrier
         if self.limit is not None and other.limit is not None:
