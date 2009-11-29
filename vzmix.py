@@ -201,7 +201,7 @@ def objectToNumber(obj):
     elif isinstance(obj, UBCValue):
         return int(obj.value)
     else:
-        raise TypeError("Cannot convert %s to a number" % (obj))
+        raise TypeError("Can not convert %s to a number" % (obj))
 
 
 def main():
