@@ -16,4 +16,5 @@ USAGE
 TODO
 ====
 
-  - Add checks for maximum and minimum of each UBC
+  - Add checks for maximum and minimum of each UBC. vzsplit tool (part of vzctl)
+    can be a good reference. See: http://git.openvz.org/?p=vzctl;a=summary
